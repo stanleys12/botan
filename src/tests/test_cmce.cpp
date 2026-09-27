@@ -212,12 +212,30 @@ class CMCE_Utility_Tests final : public Test {
          return result;
       }
 
+      Test::Result malformed_private_key_test() {
+         Test::Result result("Malformed private key");
+
+         const auto param_set = Botan::Classic_McEliece_Parameter_Set::ClassicMcEliece_348864;
+         auto params = Botan::Classic_McEliece_Parameters::create(param_set);
+
+         const std::vector<uint8_t> sk_too_short(params.sk_size_bytes() - 1);
+         result.test_throws<Botan::Invalid_Argument>(
+            "truncated private key", [&] { Botan::Classic_McEliece_PrivateKey(sk_too_short, param_set); });
+
+         const std::vector<uint8_t> sk_too_long(params.sk_size_bytes() + 1);
+         result.test_throws<Botan::Invalid_Argument>(
+            "overlong private key", [&] { Botan::Classic_McEliece_PrivateKey(sk_too_long, param_set); });
+
+         return result;
+      }
+
       std::vector<Test::Result> run() override {
          return {expand_seed_test(),
                  irreducible_poly_gen_test(),
                  gf_inv_test(),
                  gf_poly_mul_test(),
-                 rigged_rng_encryption_test()};
+                 rigged_rng_encryption_test(),
+                 malformed_private_key_test()};
       }
 };
 

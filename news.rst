@@ -9,6 +9,9 @@ Version 3.14.0, Not Yet Released
   how public key operations (signature, encryption, decryption, KEM, etc) are
   performed. (GH #5489 #5864)
 
+* Loading a Classic McEliece private key of the wrong length now throws
+  ``Invalid_Argument`` instead of triggering an internal assertion.
+
 * Add an implementation of the BLS12-381 pairing friendly curve, including the
   groups G1, G2, and Gt and the pairing operation. (GH #5718)
 
